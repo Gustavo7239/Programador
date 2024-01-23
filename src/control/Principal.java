@@ -7,6 +7,8 @@ import modelo.data.Programa;
 import modelo.data.ProgramaJava;
 import modelo.data.ProgramaPython;
 
+//Este proyecto es una prueba de concepto
+
 public class Principal {
 	public static String carpetaProyecto; 
 	public static String rutaProyecto;
@@ -24,6 +26,7 @@ public class Principal {
 		nombreClase = vista.interfaces.seleccioneNomClase();
 	    
 		Programa p1 = null;
+		Programa p2 = null;
 		
 		switch (vista.interfaces.seleccioneLenguaje()) {
 			case "java" -> p1 = new ProgramaJava(carpetaProyecto,nombreClase,rutaProyecto,codigo);
