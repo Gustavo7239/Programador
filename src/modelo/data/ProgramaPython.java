@@ -11,26 +11,24 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ProgramaPython extends Programa{
-	private String ruta;
-	private String nombreProyecto;
-	//private String Tipo;
-	private List<String> codigo;
-	private String nombreClase;
-	
-	private String rutaSrc;
-	//private String rutaBin;
 	
 	public ProgramaPython(String nombreProyecto, String nombreClase, String ruta, List<String> codigo) {
-		super();
-		this.nombreProyecto = nombreProyecto;
-		this.nombreClase=nombreClase;
-		this.ruta = ruta;
+		super(nombreProyecto, nombreClase, ruta, codigo);
 		compruebaRuta();
-		this.rutaSrc=ruta+"\\"+nombreProyecto+"\\src\\";
-		//this.rutaBin=ruta+"\\"+nombreProyecto+"\\bin\\";
+		setRutaSrc(ObtenerRutaSrc());
+		setRutaBin(ObtenerRutaBin());
 		
-		this.codigo=codigo;
 		generaArchivo();
+	}
+	
+	@Override
+	public String ObtenerRutaSrc() {
+		return getRuta()+"\\"+getNombreProyecto()+"\\src\\";
+	}
+	
+	@Override
+	public String ObtenerRutaBin() {
+		return getRuta()+"\\"+getNombreProyecto()+"\\bin\\";
 	}
 	
 	@Override
@@ -40,8 +38,8 @@ public class ProgramaPython extends Programa{
 	    pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 	    try {
 	        /* Compilamos */
-	        pb.directory(new File(rutaSrc));
-	        pb.command("python", nombreClase + ".py ");
+	        pb.directory(new File(getRutaSrc()));
+	        pb.command("python", getNombreClase() + ".py ");
 	        
 	        // Esperamos 1 segundo para dar tiempo a generar el .class
 	        pb.start();
@@ -54,32 +52,32 @@ public class ProgramaPython extends Programa{
 
 	@Override
 	public void generaArchivo() {
-		if (codigo == null || codigo.isEmpty()) {
+		if (getCodigo() == null || getCodigo().isEmpty()) {
             System.err.println("La lista de código está vacía.");
             return;
         }
 
         // Asegúrate de que la ruta termine con una barra diagonal (o diagonal invertida en Windows)
-        if (!rutaSrc.endsWith(File.separator)) {
-        	rutaSrc = rutaSrc + File.separator;
+        if (!getRutaSrc().endsWith(File.separator)) {
+        	setRutaSrc(getRutaSrc() + File.separator);
         }
 
         // Nombre del archivo .java (puedes personalizarlo)
-        String nombreArchivo = nombreClase+".py";
+        String nombreArchivo = getNombreClase() +".py";
 
         try {
             // Crea el archivo en la ruta especificada
-        	System.out.println(rutaSrc);
-            File archivo = new File(rutaSrc + nombreArchivo);
+        	System.out.println(getRutaSrc());
+            File archivo = new File(getRutaSrc() + nombreArchivo);
             FileWriter escritor = new FileWriter(archivo);
 
             // Escribe el contenido de la lista de código en el archivo
-            for (String linea : codigo) {
+            for (String linea : getCodigo()) {
                 escritor.write(linea + "\n");
             }
 
             escritor.close();
-            System.out.println("Archivo Python creado con éxito en " + rutaSrc + nombreArchivo);
+            System.out.println("Archivo Python creado con éxito en " + getRutaSrc() + nombreArchivo);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error al crear el archivo Python.");
@@ -90,18 +88,18 @@ public class ProgramaPython extends Programa{
 	
 	@Override
 	public String getRutaSrc() {
-		return ruta+"\\"+nombreProyecto+"\\src\\";
+		return getRuta()+"\\"+getNombreProyecto()+"\\src\\";
 	}
 	
 	@Override
 	public String getRutaBin() {
-		return ruta+"\\"+nombreProyecto+"\\bin\\";
+		return getRuta()+"\\"+getNombreProyecto()+"\\bin\\";
 	}
 
 	@Override
 	public void compruebaRuta() {
 		// Convierte la ruta en un objeto Path
-        Path path = Paths.get(ruta, nombreProyecto);
+        Path path = Paths.get(getRuta(), getNombreProyecto());
 
         try {
             // Crea los directorios y los archivos intermedios si no existen
@@ -121,7 +119,7 @@ public class ProgramaPython extends Programa{
 
 	@Override
 	public void verCodigo() {
-		List<String> items = codigo;
+		List<String> items = getCodigo();
 		
         // Encontrar la longitud máxima en la lista
         int maxWidth = 0;
@@ -187,7 +185,7 @@ public class ProgramaPython extends Programa{
         }
 
         System.out.println("Programación finalizada.");
-        codigo = listaDeCodigo;
+        setCodigo(listaDeCodigo);
         generaArchivo();
 	}
 
